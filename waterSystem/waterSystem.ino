@@ -12,7 +12,7 @@
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883
 #define AIO_USERNAME    "melvin2000x"
-#define AIO_KEY         "aio_yaVX30NUsRfpC5efXQkSjrNtYa5s"
+#define AIO_KEY         "check discord for the secret key"
 
 // Feeds
 #define SENSOR_DATA_FEED   "/feeds/sensor-data"

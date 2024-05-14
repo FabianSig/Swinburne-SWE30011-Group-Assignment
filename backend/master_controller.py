@@ -3,11 +3,21 @@ import mariadb
 from datetime import datetime
 import time
 import sys
+import paho.mqtt.client as mqtt
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
-insert_stmt = 'INSERT INTO watering_system_data(time, moisture_levels, light_levels, temperature_levels, humidity_levels) VALUES(%s, %s, %s, %s, %s)'
-select_stmt = 'SELECT type, operator, threshold, statement_true, statement_false FROM watering_system_condition'
+# MQTT Configuration
+AIO_SERVER = 'io.adafruit.com'
+AIO_USERNAME = 'YOUR_USERNAME'
+AIO_KEY = 'YOUR_KEY'
+SENSOR_DATA_FEED = f'{AIO_USERNAME}/feeds/sensor-data'
+COMMANDS_FEED = f'{AIO_USERNAME}/feeds/commands'
 
+# Initialize MQTT Client
+client = mqtt.Client()
+client.username_pw_set(AIO_USERNAME, AIO_KEY)
+client.connect(AIO_SERVER, 1883, 60)
+
+# MariaDB Configuration
 try:
     conn = mariadb.connect(user="fabian", password="fabian", host="127.0.0.1", port=3306, database="Arduino")
 except mariadb.Error as e:
@@ -15,7 +25,23 @@ except mariadb.Error as e:
     sys.exit(1)
 
 cur = conn.cursor()
-last_commands_sent = {}  # Dictionary to store the last command sent for each type
+last_commands_sent = {}
+
+ser = serial.Serial('/dev/ttyACM0', 9600)
+insert_stmt = 'INSERT INTO watering_system_data(time, moisture_levels, light_levels, temperature_levels, humidity_levels) VALUES(%s, %s, %s, %s, %s)'
+select_stmt = 'SELECT type, operator, threshold, statement_true, statement_false FROM watering_system_condition'
+
+def on_connect(client, userdata, flags, rc):
+    print("Connected to Adafruit IO")
+    client.subscribe(COMMANDS_FEED)
+
+def on_message(client, userdata, msg):
+    command = msg.payload.decode()
+    ser.write((command + "\n").encode())
+
+client.on_connect = on_connect
+client.on_message = on_message
+client.loop_start()
 
 while True:
     time.sleep(0.5)
@@ -38,6 +64,9 @@ while True:
             'humidity': float(humidity),
             'light': float(light)
         }
+
+        payload = f"M:{moisture},L:{light},H:{humidity},T:{temperature}"
+        client.publish(SENSOR_DATA_FEED, payload)
 
         cur.execute(select_stmt)
         for (alarm_type, condition, threshold, statement_true, statement_false) in cur:

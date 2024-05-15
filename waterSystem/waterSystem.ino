@@ -4,19 +4,19 @@
 #include <Adafruit_MQTT_Client.h>
 #include <WiFiNINA.h>
 
-// WiFi credentials
-#define WLAN_SSID       "YOUR_SSID"
-#define WLAN_PASS       "YOUR_PASSWORD"
+// ThingsBoard credentials
+#define THINGSBOARD_SERVER "YOUR_THINGSBOARD_SERVER"
+#define ACCESS_TOKEN "YOUR_ACCESS_TOKEN"
 
-// Adafruit IO credentials
-#define AIO_SERVER      "io.adafruit.com"
-#define AIO_SERVERPORT  1883
-#define AIO_USERNAME    "melvin2000x"
-#define AIO_KEY         "check discord for the secret key"
+// MQTT topics
+#define SENSOR_DATA_TOPIC "v1/devices/me/telemetry"
+#define COMMANDS_TOPIC "v1/devices/me/rpc/request/+"
 
-// Feeds
-#define SENSOR_DATA_FEED   "/feeds/sensor-data"
-#define COMMANDS_FEED      "/feeds/commands"
+
+// Initialize MQTT client
+WiFiClient wifiClient;
+PubSubClient mqttClient(wifiClient);
+
 
 #define MOISTUREPIN A0
 #define LIGHTPIN A1
@@ -37,31 +37,6 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 Adafruit_MQTT_Subscribe commandsFeed = Adafruit_MQTT_Subscribe(&mqtt, COMMANDS_FEED);
 Adafruit_MQTT_Publish sensorDataFeed = Adafruit_MQTT_Publish(&mqtt, SENSOR_DATA_FEED);
 
-void connectToWiFi() {
-    // Attempt to connect to WiFi, put your house wifi details here fabian
-    Serial.print("Connecting to WiFi...");
-    while (WiFi.begin(WLAN_SSID, WLAN_PASS) != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("Connected!");
-}
-
-void connectToMQTT() {
-    // Attempt to connect to MQTT
-    while (!mqtt.connected()) {
-        Serial.print("Connecting to MQTT...");
-        if (mqtt.connect()) {
-            Serial.println("Connected!");
-            mqtt.subscribe(&commandsFeed);
-        } else {
-            Serial.print("Failed, rc=");
-            Serial.print(mqtt.connectErrorString(mqtt.connectError()));
-            Serial.println(" retrying in 5 seconds.");
-            delay(5000);
-        }
-    }
-}
 
 void setup() {
     // Initialize serial communication

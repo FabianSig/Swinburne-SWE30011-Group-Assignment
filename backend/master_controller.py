@@ -5,17 +5,16 @@ import time
 import sys
 import paho.mqtt.client as mqtt
 
-# MQTT Configuration
-AIO_SERVER = 'io.adafruit.com'
-AIO_USERNAME = 'YOUR_USERNAME'
-AIO_KEY = 'YOUR_KEY'
-SENSOR_DATA_FEED = f'{AIO_USERNAME}/feeds/sensor-data'
-COMMANDS_FEED = f'{AIO_USERNAME}/feeds/commands'
+# MQTT Configuration with thingsboard
+THINGSBOARD_SERVER = 'YOUR_THINGSBOARD_SERVER'
+ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
+SENSOR_DATA_TOPIC = 'v1/devices/me/telemetry'
+COMMANDS_TOPIC = 'v1/devices/me/rpc/request/+'
 
 # Initialize MQTT Client
 client = mqtt.Client()
-client.username_pw_set(AIO_USERNAME, AIO_KEY)
-client.connect(AIO_SERVER, 1883, 60)
+client.username_pw_set(ACCESS_TOKEN)
+client.connect(THINGSBOARD_SERVER, 1883, 60)
 
 # MariaDB Configuration
 try:
@@ -32,8 +31,8 @@ insert_stmt = 'INSERT INTO watering_system_data(time, moisture_levels, light_lev
 select_stmt = 'SELECT type, operator, threshold, statement_true, statement_false FROM watering_system_condition'
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected to Adafruit IO")
-    client.subscribe(COMMANDS_FEED)
+    print("Connected to ThingsBoard")
+    client.subscribe(COMMANDS_TOPIC)
 
 def on_message(client, userdata, msg):
     command = msg.payload.decode()
@@ -65,8 +64,13 @@ while True:
             'light': float(light)
         }
 
-        payload = f"M:{moisture},L:{light},H:{humidity},T:{temperature}"
-        client.publish(SENSOR_DATA_FEED, payload)
+        payload = {
+            'moisture': moisture,
+            'light': light,
+            'humidity': humidity,
+            'temperature': temperature
+        }
+        client.publish(SENSOR_DATA_TOPIC, str(payload))
 
         cur.execute(select_stmt)
         for (alarm_type, condition, threshold, statement_true, statement_false) in cur:

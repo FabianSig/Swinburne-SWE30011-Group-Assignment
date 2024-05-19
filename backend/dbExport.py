@@ -7,7 +7,7 @@ insert_stmt = 'INSERT INTO watering_system_data(time, moisture_levels, light_lev
 
 # MariaDB Configuration
 try:
-    conn = mariadb.connect(user="fabian", password="fabian", host="localhost", port=3306, database="Arduino")
+    conn = mariadb.connect(user="fabian", password="os.getenv('DB_PASSWORD')", host="localhost", port=3306, database="Arduino")
 except mariadb.Error as e:
     print("There is an issue connecting to db")
     sys.exit(1)

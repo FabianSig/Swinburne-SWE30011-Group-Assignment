@@ -22,13 +22,13 @@ function init() {
             .catch(error => console.error('Error:', error));
     });
 
-    var width = 550, height = 310, padding = 60;
+    const width = 550, height = 310, padding = 60;
 
     // Initialize charts for light, humidity, temperature, and moisture
-    var chartLight = createChartComponent('#chart-light', 'light_levels', width, height, padding);
-    var chartHumidity = createChartComponent('#chart-humidity', 'humidity', width, height, padding);
-    var chartTemperature = createChartComponent('#chart-temperature', 'temperature', width, height, padding);
-    var chartMoisture = createChartComponent('#chart-moisture', 'moisture_levels', width, height, padding);  // New moisture chart
+    const chartLight = createChartComponent('#chart-light', 'light_levels', width, height, padding);
+    const chartHumidity = createChartComponent('#chart-humidity', 'humidity', width, height, padding);
+    const chartTemperature = createChartComponent('#chart-temperature', 'temperature', width, height, padding);
+    const chartMoisture = createChartComponent('#chart-moisture', 'moisture_levels', width, height, padding);  // New moisture chart
 
     // WebSocket setup
     const ws = new WebSocket('ws://20.42.87.166:3000');
@@ -51,6 +51,8 @@ function init() {
                 moisture_levels: +(parseFloat(messageData.moisture_levels) / 1023 * 100)
             }];
 
+            console.log('New data received:', newData);  // Debug statement
+
             chartLight.updateChart(newData.map(d => ({date: d.date, light_levels: d.light_levels})));
             chartHumidity.updateChart(newData.map(d => ({date: d.date, humidity: d.humidity})));
             chartTemperature.updateChart(newData.map(d => ({date: d.date, temperature: d.temperature})));
@@ -71,24 +73,24 @@ function init() {
 
 function createChartComponent(svgSelector, dataKey, width, height, padding) {
 
-    var svg = d3.select(svgSelector)
+    const svg = d3.select(svgSelector)
                 .append('svg')
                 .attr('width', width)
                 .attr('height', height)
                 .attr('class', 'card');
 
-    var xScale = d3.scaleTime()
+    const xScale = d3.scaleTime()
                     .range([padding, width - padding]);
-    var yScale = d3.scaleLinear()
+    const yScale = d3.scaleLinear()
                     .range([height - padding, padding]);
 
-    var timeFormat = d3.timeFormat("%H:%M:%S");
+    const timeFormat = d3.timeFormat("%H:%M:%S");
 
-    var line = d3.line()
+    const line = d3.line()
                 .x(d => xScale(d.date))
                 .y(d => yScale(d[dataKey]));
 
-    var dataset = [];
+    let dataset = [];
 
     svg.append('g')
         .attr('class', 'x-axis')
@@ -101,10 +103,6 @@ function createChartComponent(svgSelector, dataKey, width, height, padding) {
     svg.append('path')
         .attr('class', 'line')
         .attr('d', line([]));
-
-    var yAxis = svg.append('g')
-        .attr('class', 'y-axis')
-        .attr('transform', `translate(${padding}, 0)`);
 
     svg.append('text')
         .attr('x', width / 2) 
@@ -119,9 +117,11 @@ function createChartComponent(svgSelector, dataKey, width, height, padding) {
         while (dataset.length > 50) dataset.shift();
 
         xScale.domain(d3.extent(dataset, d => d.date));
-        var maxY = d3.max(dataset, d => d[dataKey]);
-        var minY = d3.min(dataset, d => d[dataKey]);
+        const maxY = d3.max(dataset, d => d[dataKey]);
+        const minY = d3.min(dataset, d => d[dataKey]);
         yScale.domain([minY, maxY]);
+
+        console.log(`Updating chart for ${dataKey}:`, dataset);  // Debug statement
 
         svg.select('.line')
             .datum(dataset)

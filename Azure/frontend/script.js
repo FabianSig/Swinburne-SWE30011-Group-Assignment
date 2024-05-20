@@ -39,6 +39,7 @@ function init() {
 
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log(event.data);
         const newData = data.map(item => ({
             date: new Date(item.time),
             light_levels: +parseFloat(item.light_levels),

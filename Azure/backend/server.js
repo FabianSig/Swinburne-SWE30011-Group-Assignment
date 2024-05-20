@@ -58,7 +58,18 @@ client.on('offline', () => {
 
 client.on('message', (topic, message) => {
   console.log(`Received message on topic ${topic}: ${message.toString()}`);
-  insertDataToDB(message)
+  let data;
+  try {
+    data = JSON.parse(message.toString());
+  } catch (err) {
+    console.error('Failed to parse message as JSON:', err);
+    return;
+  }
+
+  insertDataToDB(data)
+    .then(result => console.log('Data inserted:', result))
+    .catch(err => console.error('Failed to insert data into DB:', err));
+
   wss.clients.forEach((ws) => {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ topic, message: message.toString() }));
@@ -75,6 +86,11 @@ wss.on('connection', (ws) => {
 });
 
 async function insertDataToDB(data) {
+  if (!data.time || !data.moisture_levels || !data.light_levels || !data.temperature_levels || !data.humidity_levels) {
+    console.error('Missing required data fields:', data);
+    return;
+  }
+
   let conn;
   try {
     conn = await pool.getConnection();
@@ -89,7 +105,6 @@ async function insertDataToDB(data) {
     if (conn) conn.end();
   }
 }
-
 
 // Serve static files from the "public" directory
 app.use(express.static('public'));

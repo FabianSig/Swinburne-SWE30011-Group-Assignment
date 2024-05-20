@@ -13,49 +13,57 @@ username = os.getenv('MQTT_USERNAME')
 password = os.getenv('MQTT_PASSWORD')
 topic = os.getenv('MQTT_TOPIC')
 
-# Initialize MQTT Client
 client = mqtt.Client()
-client.username_pw_set("fabian","ae9k4_ebR17<&g(z")
+client.username_pw_set(username, password)
 client.connect(broker_url, 1883, 60)
-
 
 last_commands_sent = {}
 
-#ser = serial.Serial('/dev/ttyACM0', 9600)
+try:
+    ser = serial.Serial('/dev/ttyACM0', 9600)
+except serial.SerialException as e:
+    print(f"Could not open serial port: {e}")
+    ser = None
 
 def on_connect(client, userdata, flags, rc):
     print("Connected to Azure-Cloud")
-    client.subscribe(COMMANDS_TOPIC)
+    client.subscribe(commands_topic)
 
 def on_message(client, userdata, msg):
     command = msg.payload.decode()
-    ser.write((command + "\n").encode())
-
-client.username_pw_set(username, password)
+    if ser:
+        ser.write((command + "\n").encode())
 
 client.on_connect = on_connect
 client.on_message = on_message
 client.loop_start()
 
-while True:
-    time.sleep(0.5)
+try:
+    while True:
+        time.sleep(0.5)
+        if ser:
+            line = ser.readline().decode('utf-8').strip()
+            print("Arduino: " + line + " @ " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-    line = ser.readline().decode('utf-8').strip()
+            if "M:" in line and "L:" in line and "H:" in line and "T:" in line:
+                parts = line.split(',')
+                moisture = parts[0].split(':')[1]
+                light = parts[1].split(':')[1]
+                humidity = parts[2].split(':')[1]
+                temperature = parts[3].split(':')[1]
 
-    print("Arduino: " + line + " @ " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                sensor_values = {
+                    'moisture': float(moisture),
+                    'temperature': float(temperature),
+                    'humidity': float(humidity),
+                    'light': float(light)
+                }
 
-    if "M:" in line and "L:" in line and "H:" in line and "T:" in line:
-        parts = line.split(',')
-        moisture = parts[0].split(':')[1]
-        light = parts[1].split(':')[1]
-        humidity = parts[2].split(':')[1]
-        temperature = parts[3].split(':')[1]
-
-        sensor_values = {
-            'moisture': float(moisture),
-            'temperature': float(temperature),
-            'humidity': float(humidity),
-            'light': float(light)
-        }
-
-    client.publish(topic, sensor_values)
+                client.publish(topic, str(sensor_values))
+except KeyboardInterrupt:
+    print("Exiting...")
+finally:
+    if ser:
+        ser.close()
+    client.loop_stop()
+    client.disconnect()

@@ -49,11 +49,8 @@ client.on('offline', () => {
 
 client.on('message', (topic, message) => {
   console.log(`Received message on topic ${topic}: ${message.toString()}`);
-  // Broadcast the message to all connected WebSocket clients
   wss.clients.forEach((ws) => {
-console.log(WebSocket.OPEN)
     if (ws.readyState === WebSocket.OPEN) {
- console.log(JSON.stringify({ topic, message: message.toString() }));
       ws.send(JSON.stringify({ topic, message: message.toString() }));
     }
   });

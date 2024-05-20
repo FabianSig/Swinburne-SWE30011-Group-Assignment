@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
 const express = require('express');
 const WebSocket = require('ws');
+const mariadb = require('mariadb');
 require('dotenv').config();
 
 const app = express();
@@ -11,6 +12,14 @@ const brokerUrl = process.env.MQTT_BROKER_URL;
 const username = process.env.MQTT_USERNAME;
 const password = process.env.MQTT_PASSWORD;
 const topic = process.env.MQTT_TOPIC;
+
+const pool = mariadb.createPool({
+  host: 'localhost', 
+  user: process.env.MARIADB_USER, 
+  password: process.env.MARIADB_PASSWORD, 
+  database: 'Arduino',
+  connectionLimit: 5
+});
 
 console.log(`Connecting to MQTT broker at ${brokerUrl} with username ${username}`);
 
@@ -49,6 +58,7 @@ client.on('offline', () => {
 
 client.on('message', (topic, message) => {
   console.log(`Received message on topic ${topic}: ${message.toString()}`);
+  insertDataToDB(message)
   wss.clients.forEach((ws) => {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ topic, message: message.toString() }));
@@ -63,6 +73,19 @@ wss.on('connection', (ws) => {
     console.log('WebSocket client disconnected');
   });
 });
+
+async function insertDataToDB(data) {
+  let conn;
+  try {
+      conn = await pool.getConnection();
+      const result = await conn.query('INSERT INTO watering_system_data(time, moisture_levels, light_levels, temperature_levels, humidity_levels) VALUES(%s, %s, %s, %s, %s)', data.time, data.light_levels, data.humidity_levels, data.temperature_levels, data.moisture_levels);
+      return result;
+  } catch (err) {
+      throw err;
+  } finally {
+      if (conn) conn.end();
+  }
+}
 
 // Serve static files from the "public" directory
 app.use(express.static('public'));

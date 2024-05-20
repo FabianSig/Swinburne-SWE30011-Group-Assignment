@@ -43,20 +43,20 @@ function init() {
         if (data.message) {
             const messageData = JSON.parse(data.message);
 
-            const newData = [{
+            const newData = {
                 date: new Date(messageData.time),
                 light_levels: +parseFloat(messageData.light_levels),
                 humidity: +parseFloat(messageData.humidity_levels),
                 temperature: +parseFloat(messageData.temperature_levels),
                 moisture_levels: +(parseFloat(messageData.moisture_levels) / 1023 * 100)
-            }];
+            };
 
             console.log('New data received:', newData);  // Debug statement
 
-            chartLight.updateChart(newData.map(d => ({ date: d.date, light_levels: d.light_levels })));
-            chartHumidity.updateChart(newData.map(d => ({ date: d.date, humidity: d.humidity })));
-            chartTemperature.updateChart(newData.map(d => ({ date: d.date, temperature: d.temperature })));
-            chartMoisture.updateChart(newData.map(d => ({ date: d.date, moisture_levels: d.moisture_levels })));  // Update moisture chart
+            chartLight.updateChart([newData]);
+            chartHumidity.updateChart([newData]);
+            chartTemperature.updateChart([newData]);
+            chartMoisture.updateChart([newData]);  // Update moisture chart
         } else {
             console.error('Received data is not in expected format:', data);
         }

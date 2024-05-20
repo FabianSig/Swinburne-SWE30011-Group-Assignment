@@ -3,10 +3,11 @@ const WebSocket = require('ws');
 const { mqtt: mqttConfig } = require('./config');
 const { insertDataToDB } = require('./db');
 
+let client;
 let wss;
 
 function initMQTT() {
-  const client = mqtt.connect(mqttConfig.brokerUrl, {
+  client = mqtt.connect(mqttConfig.brokerUrl, {
     username: mqttConfig.username,
     password: mqttConfig.password,
     reconnectPeriod: 1000
@@ -70,4 +71,8 @@ function setWebSocketServer(webSocketServer) {
   wss = webSocketServer;
 }
 
-module.exports = { initMQTT, setWebSocketServer };
+function getMQTTClient() {
+  return client;
+}
+
+module.exports = { initMQTT, setWebSocketServer, getMQTTClient };

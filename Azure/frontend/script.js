@@ -12,12 +12,15 @@ function init() {
             },
             body: JSON.stringify({ newThreshold: event.target.value })
         };
-        fetch('http://raspberrypi:3000/updateAlarmThreshold', requestOptions)
+        fetch('/updateAlarmThreshold', requestOptions)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to update the threshold. Status: ' + response.status);
                 }
                 return response.text();
+            })
+            .then(data => {
+                console.log('Threshold updated:', data);
             })
             .catch(error => console.error('Error:', error));
     });

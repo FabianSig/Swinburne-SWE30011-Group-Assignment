@@ -12,7 +12,7 @@ function init() {
             },
             body: JSON.stringify({ newThreshold: event.target.value })
         };
-        fetch('/updateAlarmThreshold', requestOptions)
+        fetch('http://20.42.87.166:3000/updateAlarmThreshold', requestOptions)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to update the threshold. Status: ' + response.status);

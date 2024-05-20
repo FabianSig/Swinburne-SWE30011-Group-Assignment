@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SOURCE_DIR="$(dirname "$PWD")/frontend"
+SOURCE_DIR="$(dirname "$PWD")/Azure/frontend"
 DEST_DIR="/var/www/html/"
 
 sudo cp "${SOURCE_DIR}/index.html" "${DEST_DIR}"

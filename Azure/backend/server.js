@@ -86,6 +86,7 @@ wss.on('connection', (ws) => {
 });
 
 async function insertDataToDB(data) {
+  console.log(data)
   if (!data.time || !data.moisture_levels || !data.light_levels || !data.temperature_levels || !data.humidity_levels) {
     console.error('Missing required data fields:', data);
     return;

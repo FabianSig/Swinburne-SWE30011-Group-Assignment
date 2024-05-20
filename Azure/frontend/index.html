@@ -1,37 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MQTT Client</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Data Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="script.js"></script>
+    <style>
+        .card {
+            border: 1px solid #ccc;
+            margin: 20px;
+            padding: 10px;
+        }
+        .x-axis text {
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
-  <h1>MQTT Client</h1>
-  <div id="messages"></div>
-  <script>
-    const ws = new WebSocket(`ws://20.42.87.166:3000`);
+    <h1>Real-time Data Visualization</h1>
+    
+    <div>
+        <label for="threshold">Threshold: </label>
+        <input type="range" id="threshold" name="threshold" min="0" max="100">
+        <span id="value">50</span>
+    </div>
+    
+    <div id="chart-light"></div>
+    <div id="chart-humidity"></div>
+    <div id="chart-temperature"></div>
+    <div id="chart-moisture"></div> <!-- New moisture chart -->
+    
+    <div id="messages"></div> <!-- For displaying WebSocket messages -->
 
-    ws.onopen = () => {
-      console.log('Connected to WebSocket server');
-    };
-
-    ws.onmessage = (event) => {
-console.log("hi");
-      const data = JSON.parse(event.data);
-      const messageDiv = document.getElementById('messages');
-      const messageElement = document.createElement('p');
-      messageElement.textContent = `Received message on topic ${data.topic}: ${data.message}`;
-      messageDiv.appendChild(messageElement);
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    ws.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
-  </script>
 </body>
 </html>

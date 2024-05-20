@@ -53,10 +53,10 @@ function init() {
 
             console.log('New data received:', newData);  // Debug statement
 
-            chartLight.updateChart(newData.map(d => ({date: d.date, light_levels: d.light_levels})));
-            chartHumidity.updateChart(newData.map(d => ({date: d.date, humidity: d.humidity})));
-            chartTemperature.updateChart(newData.map(d => ({date: d.date, temperature: d.temperature})));
-            chartMoisture.updateChart(newData.map(d => ({date: d.date, moisture_levels: d.moisture_levels})));  // Update moisture chart
+            chartLight.updateChart(newData.map(d => ({ date: d.date, light_levels: d.light_levels })));
+            chartHumidity.updateChart(newData.map(d => ({ date: d.date, humidity: d.humidity })));
+            chartTemperature.updateChart(newData.map(d => ({ date: d.date, temperature: d.temperature })));
+            chartMoisture.updateChart(newData.map(d => ({ date: d.date, moisture_levels: d.moisture_levels })));  // Update moisture chart
         } else {
             console.error('Received data is not in expected format:', data);
         }
@@ -72,23 +72,22 @@ function init() {
 }
 
 function createChartComponent(svgSelector, dataKey, width, height, padding) {
-
     const svg = d3.select(svgSelector)
-                .append('svg')
-                .attr('width', width)
-                .attr('height', height)
-                .attr('class', 'card');
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('class', 'card');
 
     const xScale = d3.scaleTime()
-                    .range([padding, width - padding]);
+        .range([padding, width - padding]);
     const yScale = d3.scaleLinear()
-                    .range([height - padding, padding]);
+        .range([height - padding, padding]);
 
     const timeFormat = d3.timeFormat("%H:%M:%S");
 
     const line = d3.line()
-                .x(d => xScale(d.date))
-                .y(d => yScale(d[dataKey]));
+        .x(d => xScale(d.date))
+        .y(d => yScale(d[dataKey]));
 
     let dataset = [];
 
@@ -105,8 +104,8 @@ function createChartComponent(svgSelector, dataKey, width, height, padding) {
         .attr('d', line([]));
 
     svg.append('text')
-        .attr('x', width / 2) 
-        .attr('y', padding / 2) 
+        .attr('x', width / 2)
+        .attr('y', padding / 2)
         .attr('text-anchor', 'middle')
         .style('font-size', '16px')
         .text(formatAxisLabel(dataKey));
@@ -114,7 +113,7 @@ function createChartComponent(svgSelector, dataKey, width, height, padding) {
     function updateChart(newData) {
         dataset.push(...newData);
 
-        while (dataset.length > 50) dataset.shift();
+        if (dataset.length > 50) dataset = dataset.slice(-50); // Keep only the last 50 data points
 
         xScale.domain(d3.extent(dataset, d => d.date));
         const maxY = d3.max(dataset, d => d[dataKey]);

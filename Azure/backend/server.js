@@ -77,15 +77,19 @@ wss.on('connection', (ws) => {
 async function insertDataToDB(data) {
   let conn;
   try {
-      conn = await pool.getConnection();
-      const result = await conn.query('INSERT INTO watering_system_data(time, moisture_levels, light_levels, temperature_levels, humidity_levels) VALUES(%s, %s, %s, %s, %s)', data.time, data.light_levels, data.humidity_levels, data.temperature_levels, data.moisture_levels);
-      return result;
+    conn = await pool.getConnection();
+    const result = await conn.query(
+      'INSERT INTO watering_system_data(time, moisture_levels, light_levels, temperature_levels, humidity_levels) VALUES(?, ?, ?, ?, ?)', 
+      [data.time, data.moisture_levels, data.light_levels, data.temperature_levels, data.humidity_levels]
+    );
+    return result;
   } catch (err) {
-      throw err;
+    throw err;
   } finally {
-      if (conn) conn.end();
+    if (conn) conn.end();
   }
 }
+
 
 // Serve static files from the "public" directory
 app.use(express.static('public'));

@@ -7,6 +7,10 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="script.js"></script>
     <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         .card {
             border: 1px solid #ccc;
             margin: 20px;
@@ -15,6 +19,12 @@
         .x-axis text {
             font-size: 12px;
         }
+        #chart-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
     </style>
 </head>
 <body>
@@ -26,10 +36,13 @@
         <span id="value">50</span>
     </div>
     
-    <div id="chart-light"></div>
-    <div id="chart-humidity"></div>
-    <div id="chart-temperature"></div>
-    <div id="chart-moisture"></div> <!-- New moisture chart -->
+    <div id="chart-container">
+        <div id="chart-light"></div>
+        <div id="chart-humidity"></div>
+        <div id="chart-temperature"></div>
+        <div id="chart-moisture"></div> <!-- New moisture chart -->
+    </div>
+
     
     <div id="messages"></div> <!-- For displaying WebSocket messages -->
 

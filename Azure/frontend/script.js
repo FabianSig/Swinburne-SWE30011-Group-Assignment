@@ -2,7 +2,7 @@ function init() {
     const value = document.querySelector("#value");
     const input = document.querySelector("#threshold");
     value.textContent = input.value;
-    
+
     input.addEventListener("input", (event) => {
         value.textContent = event.target.value;
         const requestOptions = {
@@ -101,7 +101,10 @@ function createChartComponent(svgSelector, dataKey, width, height, padding) {
 
     svg.append('path')
         .attr('class', 'line')
-        .attr('d', line([]));
+        .attr('d', line([]))
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1.5);
 
     svg.append('text')
         .attr('x', width / 2)

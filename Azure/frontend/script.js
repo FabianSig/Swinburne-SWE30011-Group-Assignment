@@ -111,9 +111,7 @@ function createChartComponent(svgSelector, dataKey, width, height, padding) {
         .text(formatAxisLabel(dataKey));
 
     function updateChart(newData) {
-        dataset.push(...newData);
-
-        if (dataset.length > 50) dataset = dataset.slice(-50); // Keep only the last 50 data points
+        dataset = dataset.concat(newData).slice(-50); // Keep only the last 50 data points
 
         xScale.domain(d3.extent(dataset, d => d.date));
         const maxY = d3.max(dataset, d => d[dataKey]);

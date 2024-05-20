@@ -39,19 +39,25 @@ function init() {
 
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(event.data);
-        const newData = data.map(item => ({
-            date: new Date(item.time),
-            light_levels: +parseFloat(item.light_levels),
-            humidity: +parseFloat(item.humidity_levels),
-            temperature: +parseFloat(item.temperature_levels),
-            moisture_levels: +(parseFloat(item.moisture_levels) / 1023 * 100)
-        }));
 
-        chartLight.updateChart(newData.map(d => ({date: d.date, light_levels: d.light_levels})));
-        chartHumidity.updateChart(newData.map(d => ({date: d.date, humidity: d.humidity})));
-        chartTemperature.updateChart(newData.map(d => ({date: d.date, temperature: d.temperature})));
-        chartMoisture.updateChart(newData.map(d => ({date: d.date, moisture_levels: d.moisture_levels})));  // Update moisture chart
+        if (data.message) {
+            const messageData = JSON.parse(data.message);
+
+            const newData = [{
+                date: new Date(messageData.time),
+                light_levels: +parseFloat(messageData.light_levels),
+                humidity: +parseFloat(messageData.humidity_levels),
+                temperature: +parseFloat(messageData.temperature_levels),
+                moisture_levels: +(parseFloat(messageData.moisture_levels) / 1023 * 100)
+            }];
+
+            chartLight.updateChart(newData.map(d => ({date: d.date, light_levels: d.light_levels})));
+            chartHumidity.updateChart(newData.map(d => ({date: d.date, humidity: d.humidity})));
+            chartTemperature.updateChart(newData.map(d => ({date: d.date, temperature: d.temperature})));
+            chartMoisture.updateChart(newData.map(d => ({date: d.date, moisture_levels: d.moisture_levels})));  // Update moisture chart
+        } else {
+            console.error('Received data is not in expected format:', data);
+        }
     };
 
     ws.onerror = (error) => {

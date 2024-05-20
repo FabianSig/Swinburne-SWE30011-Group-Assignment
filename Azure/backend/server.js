@@ -18,7 +18,7 @@ initDatabase();
 
 app.use(express.static('public'));
 
-app.put('/updateAlarmThreshold', (req, res) => {
+app.post('/updateAlarmThreshold', (req, res) => {
   const { newThreshold } = req.body;
   if (newThreshold === undefined) {
     return res.status(400).send('Threshold value is required');

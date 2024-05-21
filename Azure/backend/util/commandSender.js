@@ -1,4 +1,4 @@
-const { getMQTTClient } = require('./util/mqttClient');
+const { getMQTTClient } = require('./mqttClient');
 
 var _thresholdTemperature = 30;
 

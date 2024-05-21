@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 # MQTT Configuration with thingsboard
 MQTT_BROKER = '20.42.87.166'
 SENSOR_DATA_TOPIC = 'test/topic'
-COMMANDS_TOPIC = 'v1/devices/me/rpc/request/+'
+THRESHOLD_COMMAND_TOPIC = 'command/threshold'
 
 broker_url = os.getenv('MQTT_BROKER_URL')
 username = os.getenv('MQTT_USERNAME')
@@ -26,11 +26,18 @@ except serial.SerialException as e:
     ser = None
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected to Azure-Cloud")
-    client.subscribe(commands_topic)
+    print("Connected to MQTT broker")
+    client.subscribe(THRESHOLD_COMMAND_TOPIC)
+    print(f"Subscribed to topics: {THRESHOLD_COMMAND_TOPIC}")
 
 def on_message(client, userdata, msg):
     command = msg.payload.decode()
+    print(f"Received message '{command}' on topic '{msg.topic}'")
+    if msg.topic == THRESHOLD_COMMAND_TOPIC:
+            handle_threshold_command(command)
+
+def handle_threshold_command(command):
+    print(f"Handling threshold command: {command}")
     if ser:
         ser.write((command + "\n").encode())
 

@@ -8,6 +8,7 @@ function setThresholdTemperature(threshold) {
 
 function sendCommand(command) {
   const client = getMQTTClient();
+  console.log(command)
   if (client) {
     client.publish('command/threshold', command, (err) => {
       if (err) {

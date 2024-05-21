@@ -20,8 +20,8 @@ initMQTT();
 setWebSocketServer(server);
 
 app.post('/updateAlarmThreshold', (req, res) => {
-  const newThreshold = req.body.threshold;
-  console.log(req.body);
+  const newThreshold = req.body.newThreshold;
+
   if (typeof newThreshold !== 'number' || newThreshold < 0) {
       return res.status(400).json({ error: 'Invalid threshold value' });
   }

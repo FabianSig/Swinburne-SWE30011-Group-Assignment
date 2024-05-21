@@ -24,6 +24,7 @@ function sendCommand(command) {
 
 function checkCriticalValue(values) {
   if (values.temperature_values > _thresholdTemperature) {
+    console.log('RED LED ON');
     sendCommand('RED LED ON');
   }
 }

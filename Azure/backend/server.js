@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const dotenv = require('dotenv');
+const cors = require('cors');
 dotenv.config();
 
 const { initMQTT, getMQTTClient } = require('./mqttClient');
@@ -10,6 +11,7 @@ const { initDatabase } = require('./db');
 const app = express();
 const server = http.createServer(app);
 
+app.use(cors());
 app.use(express.json());
 
 initMQTT();

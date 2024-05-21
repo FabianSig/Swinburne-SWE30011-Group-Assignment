@@ -26,10 +26,9 @@ app.post('/updateAlarmThreshold', (req, res) => {
       return res.status(400).json({ error: 'Invalid threshold value' });
   }
 
-
   setThresholdTemperature(newThreshold)
 
-  res.status(200).json({ message: 'Threshold updated successfully', threshold: alarmThreshold });
+  res.status(200).json({ message: 'Threshold updated successfully', threshold: newThreshold });
 });
 
 const PORT = process.env.PORT || 3000;

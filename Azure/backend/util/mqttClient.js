@@ -2,6 +2,7 @@ const mqtt = require('mqtt');
 const WebSocket = require('ws');
 const { mqtt: mqttConfig } = require('./config');
 const { insertDataToDB } = require('./db');
+const { checkCriticalValue } = require('./commandSender')
 
 let client;
 let wss;
@@ -25,6 +26,9 @@ function initMQTT() {
   });
 
   client.on('message', async (topic, message) => {
+
+    checkCriticalValue(message);
+
     console.log(`Received message on topic ${topic}: ${message.toString()}`);
     let data;
     try {

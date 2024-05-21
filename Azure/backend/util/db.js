@@ -1,7 +1,7 @@
 const mariadb = require('mariadb');
-const { db: dbConfig } = require('./config');
+const { db } = require('./config');
 
-const pool = mariadb.createPool(dbConfig);
+const pool = mariadb.createPool(db);
 
 async function insertDataToDB(data) {
   if (!data.time || !data.moisture_levels || !data.light_levels || !data.temperature_levels || !data.humidity_levels) {

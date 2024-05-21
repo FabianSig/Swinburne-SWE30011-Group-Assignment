@@ -40,4 +40,4 @@ function getMQTTClient() {
   return client;
 }
 
-module.exports = { initMQTT, getMQTTClient, handleMQTTMessage };
+module.exports = { initMQTT, getMQTTClient};

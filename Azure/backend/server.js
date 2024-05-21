@@ -5,6 +5,7 @@ const cors = require('cors');
 const { initMQTT } = require('./util/mqtt');
 const { setWebSocketServer } = require('./util/mqttClient');
 const WebSocket = require('ws');
+const { setThresholdTemperature } = require('./util/commandSender');
 
 dotenv.config();
 
@@ -17,6 +18,19 @@ app.use(express.static('public'));
 
 initMQTT();
 setWebSocketServer(server);
+
+app.post('/updateAlarmThreshold', (req, res) => {
+  const newThreshold = req.body.threshold;
+
+  if (typeof newThreshold !== 'number' || newThreshold < 0) {
+      return res.status(400).json({ error: 'Invalid threshold value' });
+  }
+
+
+  setThresholdTemperature(newThreshold)
+
+  res.status(200).json({ message: 'Threshold updated successfully', threshold: alarmThreshold });
+});
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

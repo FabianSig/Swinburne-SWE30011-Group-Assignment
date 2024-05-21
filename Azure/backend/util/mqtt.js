@@ -1,4 +1,5 @@
 const mqtt = require('mqtt');
+const { handleMQTTMessage } = require('./mqttClient');
 
 let client;
 
@@ -25,12 +26,16 @@ function initMQTT() {
     });
   });
 
-  client.on('message', handleMQTTMessage);
+  client.on('message', (topic, message) => {
+    handleMQTTMessage(topic, message).catch(err => console.error('Error in handleMQTTMessage:', err));
+  });
 
   client.on('error', (err) => console.error('MQTT client error:', err.message));
   client.on('close', () => console.log('MQTT connection closed'));
   client.on('offline', () => console.log('MQTT client is offline'));
   client.on('reconnect', () => console.log('Reconnecting to the MQTT broker...'));
+
+  return client;
 }
 
 function getMQTTClient() {
@@ -40,4 +45,4 @@ function getMQTTClient() {
   return client;
 }
 
-module.exports = { initMQTT, getMQTTClient};
+module.exports = { initMQTT, getMQTTClient };

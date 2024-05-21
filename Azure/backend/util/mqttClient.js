@@ -1,5 +1,5 @@
 const { checkCriticalValue } = require('./commandSender');
-const { insertDataToDB } = require('../db');
+const { insertDataToDB } = require('./db');
 const WebSocket = require('ws'); // Ensure WebSocket is required if not already
 let wss; // WebSocket Server instance
 

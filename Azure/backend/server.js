@@ -21,8 +21,10 @@ initDatabase();
 app.use(express.static('public'));
 
 app.post('/updateAlarmThreshold', (req, res) => {
+  console.log('Received request:', req.body);
   const { newThreshold } = req.body;
   if (newThreshold === undefined) {
+    console.log('Threshold value is required');
     return res.status(400).send('Threshold value is required');
   }
 
@@ -30,11 +32,13 @@ app.post('/updateAlarmThreshold', (req, res) => {
   if (client) {
     client.publish('command/threshold', newThreshold.toString(), (err) => {
       if (err) {
+        console.log('Failed to publish threshold value', err);
         return res.status(500).send('Failed to publish threshold value');
       }
       res.send('Threshold value updated');
     });
   } else {
+    console.log('MQTT client is not connected');
     res.status(500).send('MQTT client is not connected');
   }
 });

@@ -1,16 +1,14 @@
 function init() {
     const value = document.querySelector("#value");
     const input = document.querySelector("#threshold");
-    value.textContent = input.value;
 
-    input.addEventListener("input", (event) => {
-        value.textContent = event.target.value;
+    function sendCommand(command){
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ newThreshold: event.target.value })
+            body: JSON.stringify({ command: command })
         };
         fetch('http://20.42.87.166:3000/updateAlarmThreshold', requestOptions)
             .then(response => {
@@ -23,7 +21,7 @@ function init() {
                 console.log('Threshold updated:', data);
             })
             .catch(error => console.error('Error:', error));
-    });
+    }
 
     const width = 550, height = 310, padding = 60;
 

@@ -13,7 +13,7 @@ broker_url = os.getenv('MQTT_BROKER_URL')
 broker_port = int(os.getenv('MQTT_BROKER_PORT'))
 username = os.getenv('MQTT_USERNAME')
 password = os.getenv('MQTT_PASSWORD')
-topic = os.getenv('MQTT_TOPIC')
+topic = os.getenv('MQTT_SENSOR_TOPIC')
 
 def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}")
@@ -23,7 +23,7 @@ def on_message(client, userdata, msg):
     print(f"Message received: {msg.payload.decode()}")
 
 # Initialize the MQTT client
-client = mqtt.Client(transport="websockets")
+client = mqtt.Client()
 client.username_pw_set(username, password)
 client.on_connect = on_connect
 client.on_message = on_message

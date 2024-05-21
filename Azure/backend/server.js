@@ -3,7 +3,6 @@ const http = require('http');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const { initMQTT } = require('./util/mqtt');
-const initRoutes = require('./routes');
 
 dotenv.config();
 

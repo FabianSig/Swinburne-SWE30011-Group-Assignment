@@ -1,7 +1,14 @@
 const mariadb = require('mariadb');
-const { db } = require('./config');
 
-const pool = mariadb.createPool(db);
+require('dotenv').config();
+
+const pool = mariadb.createPool({
+  host: 'localhost',
+  user: process.env.MARIADB_USER,
+  password: process.env.MARIADB_PASSWORD,
+  database: 'Arduino',
+  connectionLimit: 5
+});
 
 async function insertDataToDB(data) {
   if (!data.time || !data.moisture_levels || !data.light_levels || !data.temperature_levels || !data.humidity_levels) {

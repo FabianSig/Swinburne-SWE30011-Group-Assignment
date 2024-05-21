@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const { initMQTT } = require('./util/mqtt');
 const { setWebSocketServer } = require('./util/mqttClient');
-const initRoutes = require('./routes');
 const WebSocket = require('ws');
 
 dotenv.config();

@@ -4,10 +4,10 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 dotenv.config();
 
-const { initMQTT} = require('./util/mqttClient');
-const { initWebSocket } = require('./util/websocket');
-const { initDatabase } = require('./util/db');
-const { setThresholdTemperature } = require('./util/commandSender')
+const { initMQTT} = require('./util/mqttClient.js');
+const { initWebSocket } = require('./util/websocket.js');
+const { initDatabase } = require('./util/db.js');
+const { setThresholdTemperature } = require('./util/commandSender.js')
 
 const app = express();
 const server = http.createServer(app);

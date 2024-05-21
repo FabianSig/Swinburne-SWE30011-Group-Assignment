@@ -4,14 +4,18 @@ const { handleMQTTMessage } = require('./mqttClient');
 let client;
 
 function initMQTT() {
+  
   const brokerUrl = process.env.MQTT_BROKER_URL;
+  const brokerPort = parseInt(process.env.MQTT_BROKER_PORT, 10);
   const username = process.env.MQTT_USERNAME;
   const password = process.env.MQTT_PASSWORD;
   const topic = process.env.MQTT_TOPIC;
 
-  client = mqtt.connect(brokerUrl, {
-    username,
-    password,
+  client = mqtt.connect({
+    host: brokerUrl,
+    port: brokerPort,
+    username: username,
+    password: password,
     reconnectPeriod: 1000,
   });
 

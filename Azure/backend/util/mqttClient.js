@@ -8,7 +8,7 @@ function setWebSocketServer(server) {
 }
 
 async function handleMQTTMessage(topic, message) {
-  checkCriticalValue(message.toString());
+  checkCriticalValue(JSON.parse(message.toString()));
 
   console.log(`Received message on topic ${topic}: ${message.toString()}`);
   let data;

@@ -59,12 +59,11 @@ client.loop_start()
 print("MQTT client loop started")
 
 # Placeholder for the serial object
-ser = None
-# try:
-#     ser = serial.Serial('/dev/ttyACM0', 9600)
-# except serial.SerialException as e:
-#     print(f"Could not open serial port: {e}")
-#     ser = None
+try:
+    ser = serial.Serial('/dev/ttyACM0', 9600)
+except serial.SerialException as e:
+    print(f"Could not open serial port: {e}")
+    ser = None
 
 try:
     while True:

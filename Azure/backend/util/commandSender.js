@@ -22,7 +22,7 @@ function sendCommand(command, client) {
 }
 
 function checkCriticalValue(values, client) {
-  if (values.moisture_levels > _thresholdTemperature) {
+  if (values.moisture_levels < _thresholdTemperature) {
     sendCommand('PUMP ON', client);
   }
 }

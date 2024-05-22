@@ -1,6 +1,8 @@
 const { getMQTTClient } = require('./mqtt');
 
 var _thresholdTemperature = 30;
+var lastCommand = new Set();
+
 
 function setThresholdTemperature(threshold) {
   _thresholdTemperature = threshold;
@@ -22,11 +24,15 @@ function sendCommand(command, client) {
 }
 
 function checkCriticalValue(values, client) {
-  if (values.moisture_levels < _thresholdTemperature) {
+  if (values.moisture_levels < _thresholdTemperature && !lastCommand.has('PUMP ON')) {
     sendCommand('PUMP ON', client);
+    lastCommand.add('PUMP ON');
+    lastCommand.delete('PUMP OFF');
   }
-  else{
+  if(values.moisture_levels > _thresholdTemperature && !lastCommand.has('PUMP OFF'))
     sendCommand('PUMP OFF', client);
+    lastCommand.add('PUMP OFF');
+    lastCommand.delete('PUMP ON');
   }
 }
 

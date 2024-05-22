@@ -81,10 +81,11 @@ try:
                 temperature = parts[3].split(':')[1]
 
                 sensor_values = {
-                    "moisture": float(moisture),
-                    "temperature": float(temperature),
-                    "humidity": float(humidity),
-                    "light": float(light)
+                    "time": time.strftime('%Y-%m-%dT%H:%M:%S'),
+                    "light_levels": float(light),
+                    "humidity_levels": float(humidity),
+                    "temperature_levels": float(temperature),
+                    "moisture_levels": float(moisture)
                 }
 
                 sensor_values_json = json.dumps(sensor_values)

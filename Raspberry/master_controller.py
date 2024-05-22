@@ -80,10 +80,10 @@ try:
                 temperature = parts[3].split(':')[1]
 
                 sensor_values = {
-                    'moisture': float(moisture),
-                    'temperature': float(temperature),
-                    'humidity': float(humidity),
-                    'light': float(light)
+                    moisture: float(moisture),
+                    temperature: float(temperature),
+                    humidity: float(humidity),
+                    light: float(light)
                 }
 
                 client.publish(sensor_topic, str(sensor_values))

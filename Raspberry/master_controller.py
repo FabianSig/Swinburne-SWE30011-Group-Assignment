@@ -89,7 +89,7 @@ try:
 
                 sensor_values_json = json.dumps(sensor_values)
 
-                client.publish(sensor_topic_json, str(sensor_values))
+                client.publish(sensor_topic, sensor_values_json)
 except KeyboardInterrupt:
     print("Exiting...")
 finally:

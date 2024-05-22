@@ -31,7 +31,7 @@ function initMQTT() {
   });
 
   client.on('message', (topic, message) => {
-    handleMQTTMessage(topic, message).catch(err => console.error('Error in handleMQTTMessage:', err));
+    handleMQTTMessage(topic, message, client).catch(err => console.error('Error in handleMQTTMessage:', err));
   });
 
   client.on('error', (err) => console.error('MQTT client error:', err.message));

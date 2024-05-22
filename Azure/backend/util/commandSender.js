@@ -6,8 +6,7 @@ function setThresholdTemperature(threshold) {
   _thresholdTemperature = threshold;
 }
 
-function sendCommand(command) {
-  const client = getMQTTClient();
+function sendCommand(command, client) {
   console.log(command)
   if (client) {
     client.publish('command/threshold', command, (err) => {
@@ -22,9 +21,9 @@ function sendCommand(command) {
   }
 }
 
-function checkCriticalValue(values) {
+function checkCriticalValue(values, client) {
   if (values.temperature_levels > _thresholdTemperature) {
-    sendCommand('RED LED ON');
+    sendCommand('RED LED ON', client);
   }
 }
 

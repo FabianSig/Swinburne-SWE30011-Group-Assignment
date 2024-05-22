@@ -4,6 +4,7 @@ from datetime import datetime
 import time
 import paho.mqtt.client as mqtt
 from dotenv import load_dotenv
+import json
 
 # Load environment variables
 load_dotenv()
@@ -80,11 +81,13 @@ try:
                 temperature = parts[3].split(':')[1]
 
                 sensor_values = {
-                    moisture: float(moisture),
-                    temperature: float(temperature),
-                    humidity: float(humidity),
-                    light: float(light)
+                    "moisture": float(moisture),
+                    "temperature": float(temperature),
+                    "humidity": float(humidity),
+                    "light": float(light)
                 }
+
+                sensor_values_json = json.dumps(sensor_values)
 
                 client.publish(sensor_topic, str(sensor_values))
 except KeyboardInterrupt:

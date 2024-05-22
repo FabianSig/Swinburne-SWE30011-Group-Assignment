@@ -22,8 +22,8 @@ function sendCommand(command, client) {
 }
 
 function checkCriticalValue(values, client) {
-  if (values.temperature_levels > _thresholdTemperature) {
-    sendCommand('RED LED ON', client);
+  if (values.moisture_levels > _thresholdTemperature) {
+    sendCommand('PUMP ON', client);
   }
 }
 

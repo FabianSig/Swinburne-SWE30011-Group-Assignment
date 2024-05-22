@@ -25,6 +25,9 @@ function checkCriticalValue(values, client) {
   if (values.moisture_levels < _thresholdTemperature) {
     sendCommand('PUMP ON', client);
   }
+  else{
+    sendCommand('PUMP OFF', client);
+  }
 }
 
 module.exports = {

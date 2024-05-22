@@ -29,7 +29,7 @@ function checkCriticalValue(values, client) {
     lastCommand.add('PUMP ON');
     lastCommand.delete('PUMP OFF');
   }
-  if(values.moisture_levels > _thresholdTemperature && !lastCommand.has('PUMP OFF'))
+  if(values.moisture_levels > _thresholdTemperature && !lastCommand.has('PUMP OFF')){
     sendCommand('PUMP OFF', client);
     lastCommand.add('PUMP OFF');
     lastCommand.delete('PUMP ON');

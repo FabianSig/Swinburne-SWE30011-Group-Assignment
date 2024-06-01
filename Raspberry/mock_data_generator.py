@@ -38,10 +38,10 @@ try:
         # Generate mock data
         data = {
             "time": time.strftime('%Y-%m-%dT%H:%M:%S'),
-            "light_levels": random.uniform(0, 1000),
-            "humidity_levels": random.uniform(0, 100),
-            "temperature_levels": random.uniform(15, 30),
-            "moisture_levels": random.uniform(0, 1023)
+            "light_levels": random.uniform(600, 700),
+            "humidity_levels": random.uniform(60, 70),
+            "temperature_levels": random.uniform(20, 22),
+            "moisture_levels": random.uniform(40, 50)
         }
         client.publish(topic, json.dumps(data))
         time.sleep(1)  # Sleep for 1 second before sending the next data
